@@ -185,8 +185,7 @@ def which_prime_divisors(int_val):
     ret = []
     for i in range(2,int_val):
         if is_prime(i) and int_val % i == 0:
-            ret.insert(-1,i)
-    ret = sorted(ret)   
+            ret.append(i) 
     ########################
     assert ret is not None, fname+' is not defined'
     assert type(ret) is type([]), fname+' should return a list'
