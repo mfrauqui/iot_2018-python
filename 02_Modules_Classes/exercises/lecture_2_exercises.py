@@ -13,20 +13,32 @@ class Point(object):
         define class point in 2-D space given a list of coordinates
         raise an exception Lecture2Err if coordinates are not numeric
     '''
-    def __init__(self,coordinates): 
+    coordinates = [0,0]
+    def __init__(self,coordinates):
+      if(self.isnumeric(coordinates) and self.is2D(coordinates)):
+       for i,j in enumerate(coordinates):
+        self.coordinates[i]=j;
+      self.test_class()
         ########################
-        # code here
-        ########################
-        self.test_class()
-
+    def __str__(self):
+      return "("+self.coordinates[0]+","+self.coordinates[1]+")"
     def test_class(self):
         assert 'coordinates' in dir(self), self.__class__.__name__+' -> miss attribute coordinates'
         for c in self.coordinates: 
-            assert (isinstance(c,int) or isinstance(c,float)),self.__class__.__name__+' -> coordinate is not numeric'
+            assert ( not isinstance(c,int) or  not isinstance(c,float)),self.__class__.__name__+' -> coordinate is not numeric'
         assert len(self.coordinates) == 2, self.__class__.__name__+' -> did not raise any exception to test 2D space'
     
     ########################
-    # other methods here
+    def isnumeric(self, coordinates):
+      if (len(coordinates) != 2):
+        raise Lecture2Err('not a 2D space')
+      else:
+        return coordinates;
+    def is2D(self,coordinates):
+      for c in coordinates:
+        if(not isinstance(c,int) and not isinstance(c,float) ):
+          raise Lecture2Err('coordinates are not numeric')
+      return coordinates;
     ########################
 
 class Shape(object):
@@ -34,14 +46,15 @@ class Shape(object):
         define class Shape given a list of 2D points of type Point 
         raise an exception Lecture2Err if a point is not Point (create ispoint())
     '''
+    points = {}
     def __init__(self,points): 
         if not (isinstance(points,list)): 
             raise Lecture2Err('points is not a list of Point')
         ########################
-        # code here
+        for point in points:
+          self.ispoint(point);
         ########################
         self.test_class()
-
     def test_class(self):
         assert 'points' in dir(self), self.__class__.__name__+' -> miss attribute points'
         for p in self.points: 
@@ -49,7 +62,11 @@ class Shape(object):
 
 
     ########################
-    # other methods here
+    def ispoint(self, p):
+      if not(isinstance(p, Point)):
+        raise Lecture2Err('point is not an instance of Point')
+      else:
+        return p;  
     ########################
 
 ########################
@@ -62,8 +79,14 @@ class Circle(object):
     Circle is defined by 1 Point: center.  
     Circle needs to define radius. radius must be numeric (create isnumeric()), otherwise raise an exception Lecture2Err
     '''
+    center = None;
+    radius = 0;
     def __init__(self,center,radius):
         ########################
+        if not (isinstance(center,Point)): 
+          raise Lecture2Err('center is not a  Point')
+        if self.isnumeric(radius):
+          self.center = Point.__init__(self,center)
         # code here
         ########################
         self.test_class()
@@ -76,6 +99,11 @@ class Circle(object):
 
     ########################
     # other methods here
+    def isnumeric(self, radius):
+      if not(isinstance(radius, int) or isinstance(radius, float)):
+          raise Lecture2Err('radius is not a  numeric value')
+      else:
+        return True;
     ########################
 
 class Segment(object): 
@@ -122,6 +150,7 @@ class Triangle(object):
 if __name__ == "__main__":
     tests=[\
            'p = Point(["1"])',\
+           'p = Point(["1","2"])',\
            'p = Point([1])',\
            'p = Point([1,2,3])',\
            'p = Point([1,2])',\
